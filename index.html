@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Philippines Map - AMCharts 5</title>
+  <style>
+    #chartdiv {
+      width: 100%;
+      height: 600px;
+    }
+  </style>
+  <!-- Resources -->
+  <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/map.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/geodata/philippinesLow.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+</head>
+<body>
+
+  <!-- Chart container -->
+  <div id="chartdiv"></div>
+
+  <!-- Chart code -->
+  <script>
+    am5.ready(function () {
+      // Create root
+      var root = am5.Root.new("chartdiv");
+
+      // Set theme
+      root.setThemes([
+        am5themes_Animated.new(root)
+      ]);
+
+      // Create chart
+      var chart = root.container.children.push(
+        am5map.MapChart.new(root, {
+          panX: "none",
+          panY: "none",
+          wheelX: "none",
+          wheelY: "none",
+          projection: am5map.geoMercator()
+        })
+      );
+
+      // Create polygon series for Philippines
+      var polygonSeries = chart.series.push(
+        am5map.MapPolygonSeries.new(root, {
+          geoJSON: am5geodata_philippinesLow,
+          valueField: "value",
+          calculateAggregates: true
+        })
+      );
+
+      // Configure tooltips
+      polygonSeries.mapPolygons.template.setAll({
+        tooltipText: "{name}",
+        interactive: true
+      });
+
+      polygonSeries.mapPolygons.template.states.create("hover", {
+        fill: am5.color(0x677935)
+      });
+
+      // Zoom to Philippines
+      chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
+    }); // end am5.ready()
+  </script>
+
+</body>
+</html>
